@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "NinjaScriptAudit": {
+      "commandName": "Project"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    }
+  }
+}
