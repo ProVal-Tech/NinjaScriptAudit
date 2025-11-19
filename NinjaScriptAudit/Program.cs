@@ -77,7 +77,9 @@ listener.Start();
 instance = instance.Replace("https://", "").Replace("http://", "").TrimEnd('/');
 // https://provaltech.rmmservice.com/ws/oauth/authorize?response_type=code&client_id=jF2iBFGS-4PcJSXI2BZOJPWNQVk&client_secret=9AAneb4DfkYDDsXVO0-1V1Via1mdgFSYqJ6uZfR2OmRfSYXVdfAy7Q&redirect_uri=http://localhost:8080&scope=offline_access%20monitoring%20management%20control
 UriBuilder uriBuilder = new($"https://{instance}/ws/oauth/authorize");
-uriBuilder.Query = $"response_type=code&client_id={WebUtility.UrlEncode(clientId)}&client_secret={WebUtility.UrlEncode(clientSecret)}&redirect_uri={WebUtility.UrlEncode(redirectUri)}&scope={WebUtility.UrlEncode(scope)}";
+string encodedScope = scope.Replace(" ", "%20");
+string cleanRedirectUri = redirectUri.TrimEnd('/');
+uriBuilder.Query = $"response_type=code&client_id={clientId}&client_secret={clientSecret}&redirect_uri={cleanRedirectUri}&state=custom_state&scope={encodedScope}";
 static string TerminalURL(string caption, string url) => $"\u001B]8;;{url}\a{caption}\u001B]8;;\a";
 
 Uri authUri = uriBuilder.Uri;
@@ -150,7 +152,7 @@ FormUrlEncodedContent body = new(
     [
         new KeyValuePair<string, string>("grant_type", "authorization_code"),
         new KeyValuePair<string, string>("code", accessCode),
-        new KeyValuePair<string, string>("redirect_uri", redirectUri),
+        new KeyValuePair<string, string>("redirect_uri", cleanRedirectUri),
         new KeyValuePair<string, string>("client_id", clientId),
         new KeyValuePair<string, string>("client_secret", clientSecret)
     ]
